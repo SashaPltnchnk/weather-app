@@ -65,14 +65,20 @@ export const WeatherScreen: React.FC = () => {
           <Text style={styles.imageText}>Search</Text>
         </TouchableOpacity>
       </View>
-      {weekDays.map((day) => {
-        return (
-          <View key={day.id} style={styles.forecast}>
-            <Text style={styles.day}>{day.name}</Text>
-            <Text style={styles.temperature}>+{temperature}°</Text>
-          </View>
-        );
-      })}
+      {!!value && !!temperature ? (
+        weekDays.map((day) => {
+          return (
+            <View key={day.id} style={styles.forecast}>
+              <Text style={styles.day}>{day.name}</Text>
+              <Text style={styles.temperature}>+{temperature}°</Text>
+            </View>
+          );
+        })
+      ) : (
+        <View>
+          <Text>Please, select a city</Text>
+        </View>
+      )}
     </View>
   );
 };
