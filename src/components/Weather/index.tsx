@@ -6,6 +6,8 @@ import {useRoute} from '@react-navigation/native';
 import {Config} from '../../../environments/environments';
 import {convertToCelsius} from '../../shared/utils/convert-to-celsius';
 
+import {TabNavigationParamList} from '../App';
+
 import {styles} from './styles';
 
 interface Week {
@@ -23,8 +25,10 @@ const weekDays: Week[] = [
   {id: 7, name: 'Sunday'},
 ];
 
+type WeatherScreenRouteProp = RouteProp<TabNavigationParamList, 'Weather'>;
+
 export const WeatherScreen: React.FC = () => {
-  const route = useRoute();
+  const route = useRoute<WeatherScreenRouteProp>();
   const [value, onChangeText] = useState(route.params?.address?.city ?? '');
   const [temperature, setTemperature] = useState<string>('');
 
