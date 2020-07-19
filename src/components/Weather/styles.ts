@@ -15,10 +15,18 @@ export const styles = StyleSheet.create({
     borderColor: 'black',
     borderWidth: 1,
     borderRadius: 20,
-    padding: 10,
-    flex: 1,
+    padding: 8,
+    marginLeft: 0,
+    marginRight: 0,
+    backgroundColor: 'transparent',
   },
-  imageContainer: {
+  inputContainer: {
+    backgroundColor: 'transparent',
+    borderTopWidth: 0,
+    borderBottomWidth: 0,
+    marginTop: -8,
+  },
+  buttonContainer: {
     borderRadius: 20,
     borderColor: 'black',
     borderWidth: 1,
@@ -26,18 +34,24 @@ export const styles = StyleSheet.create({
     marginLeft: 5,
     flexDirection: 'row',
     alignItems: 'center',
+    minHeight: 50,
+    maxHeight: 50,
+    marginTop: 7,
   },
-  image: {
+  buttonIcon: {
     height: 20,
     width: 20,
   },
-  imageText: {
+  buttonText: {
     fontWeight: 'bold',
     marginLeft: 3,
     fontSize: 16,
   },
+  content: {
+    marginTop: 30,
+  },
   forecast: {
-    marginTop: 20,
+    marginBottom: 20,
     flexDirection: 'row',
     borderRadius: 10,
     backgroundColor: '#824DAD',
@@ -45,12 +59,12 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 30,
     paddingVertical: 15,
   },
-  day: {
-    color: 'white',
+  textWhite: {
+    color: '#fff',
     fontSize: 18,
   },
-  temperature: {
-    color: 'white',
+  textBlack: {
+    color: '#000',
     fontSize: 18,
   },
 });

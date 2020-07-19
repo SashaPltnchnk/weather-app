@@ -1,7 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
+import {Image, Text, TouchableOpacity, View} from 'react-native';
+import {RouteProp, useRoute} from '@react-navigation/native';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import axios from 'axios';
-import {Image, Text, TextInput, TouchableOpacity, View} from 'react-native';
-import {useRoute} from '@react-navigation/native';
 
 import {Config} from '../../../environments/environments';
 import {convertToCelsius} from '../../shared/utils/convert-to-celsius';
@@ -29,13 +30,14 @@ type WeatherScreenRouteProp = RouteProp<TabNavigationParamList, 'Weather'>;
 
 export const WeatherScreen: React.FC = () => {
   const route = useRoute<WeatherScreenRouteProp>();
-  const [value, onChangeText] = useState(route.params?.address?.city ?? '');
+  const passedAddress = route.params?.address;
+  const [city, setCity] = useState(passedAddress?.city ?? '');
   const [temperature, setTemperature] = useState<string>('');
 
-  const getTemp = () => {
+  const getTemp = (cityName: string) => {
     axios
       .get(
-        `http://api.openweathermap.org/data/2.5/weather?q=${value}&appid=${Config.WEATHER_API_KEY}`,
+        `http://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${Config.WEATHER_API_KEY}`,
       )
       .then(({data}) => {
         const temp = convertToCelsius(data.main.temp);
@@ -44,45 +46,67 @@ export const WeatherScreen: React.FC = () => {
       .catch((err) => console.log(err));
   };
 
-  useEffect(() => {
-    getTemp();
-  }, []);
-
   const onSearch = () => {
-    getTemp();
+    getTemp(city);
   };
 
   return (
     <View style={styles.root}>
       <View style={styles.container}>
-        <TextInput
-          style={styles.input}
+        <GooglePlacesAutocomplete
           placeholder={'Enter city name'}
-          onChangeText={(text) => onChangeText(text)}
-          value={value}
+          onPress={(data) => {
+            setCity(data.structured_formatting.main_text);
+          }}
+          getDefaultValue={() =>
+            passedAddress?.city
+              ? `${passedAddress?.city}, ${passedAddress?.country}`
+              : ''
+          }
+          query={{
+            key: Config.GOOGLE_API_KEY,
+            language: 'en',
+          }}
+          styles={{
+            textInput: styles.input,
+            textInputContainer: styles.inputContainer,
+          }}
+          enablePoweredByContainer={false}
+          listUnderlayColor={'#824DAD'}
+          renderRightButton={() => {
+            return (
+              <TouchableOpacity
+                style={styles.buttonContainer}
+                onPress={onSearch}>
+                <Image
+                  source={require('../../../assets/icons/search.png')}
+                  style={styles.buttonIcon}
+                />
+                <Text style={styles.buttonText}>Search</Text>
+              </TouchableOpacity>
+            );
+          }}
         />
-        <TouchableOpacity style={styles.imageContainer} onPress={onSearch}>
-          <Image
-            source={require('../../../assets/icons/search.png')}
-            style={styles.image}
-          />
-          <Text style={styles.imageText}>Search</Text>
-        </TouchableOpacity>
       </View>
-      {!!value && !!temperature ? (
-        weekDays.map((day) => {
-          return (
-            <View key={day.id} style={styles.forecast}>
-              <Text style={styles.day}>{day.name}</Text>
-              <Text style={styles.temperature}>+{temperature}°</Text>
-            </View>
-          );
-        })
-      ) : (
-        <View>
-          <Text>Please, select a city</Text>
-        </View>
-      )}
+
+      <View style={styles.content}>
+        {!!city && !!temperature ? (
+          weekDays.map((day) => {
+            return (
+              <View key={day.id} style={styles.forecast}>
+                <Text style={styles.textWhite}>{day.name}</Text>
+                <Text style={styles.textWhite}>{temperature}</Text>
+              </View>
+            );
+          })
+        ) : !!city && !temperature ? (
+          <Text style={styles.textBlack}>
+            Click `Search` to see the weather forecast
+          </Text>
+        ) : (
+          <Text style={styles.textBlack}>Please, select a city ↑</Text>
+        )}
+      </View>
     </View>
   );
 };
