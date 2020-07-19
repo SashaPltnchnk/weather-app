@@ -8,11 +8,18 @@ import Geocoder from 'react-native-geocoding';
 
 import {MapScreen} from './Map';
 import {WeatherScreen} from './Weather';
+
 import {Config} from '../../environments/environments';
+import {Address} from '../shared/interfaces/map';
 
 import {styles} from './styles';
 
-const Tab = createBottomTabNavigator();
+export type TabNavigationParamList = {
+  Map: undefined;
+  Weather: {address: Address};
+};
+
+const Tab = createBottomTabNavigator<TabNavigationParamList>();
 
 const App = () => {
   Geocoder.init(Config.GOOGLE_API_KEY, {language: 'en'});
