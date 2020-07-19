@@ -1,5 +1,7 @@
 export function convertToCelsius(kelvinTemp: number): string {
-  const cels = kelvinTemp - 273.15;
+  const difference = 273.15;
+  const cels = kelvinTemp - difference;
   const celsRounded = Math.round(cels);
-  return celsRounded.toString();
+  const mark = kelvinTemp >= difference ? '+' : '-';
+  return mark + celsRounded.toString() + '°';
 }
